@@ -1,0 +1,6 @@
+{
+  "name": "PromptX",
+  "description": "A frictionless prompt management and injection tool featuring dynamic parameter forms, silent version control, and A/B testing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

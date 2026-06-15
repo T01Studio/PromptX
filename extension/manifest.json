@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "PromptX - AI 提示词快捷指令",
+  "version": "1.0.0",
+  "description": "在任意 AI 聊天平台输入 / 唤起 PromptX 提示词指令集，一键填入模板",
+  "permissions": ["storage"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["prompts.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PromptX"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

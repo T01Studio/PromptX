@@ -1,7 +1,7 @@
 # PromptX (灵犀) 🚀
 
-[![License](https://img.shields.io/github/license/username/PromptX)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![License](https://img.shields.io/github/license/T01Studio/PromptX)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/T01Studio/PromptX#参与贡献)
 
 PromptX 是一款致力于减少人机交互摩擦的轻量级辅助工具。我们认为，**用户不仅仅是在管理提示词（Prompts），而是在不断将自己的工作方法（Methodology）沉淀为系统化的能力。**
 

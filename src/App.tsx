@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AppView, Category, Prompt } from './types';
 import { INITIAL_CATEGORIES, INITIAL_PROMPTS } from './data';
-import { LayoutDashboard, TerminalSquare, Swords, Settings2 } from 'lucide-react';
+import { LayoutDashboard, TerminalSquare, Swords, Settings2, BookOpen, Puzzle } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Playground from './components/Playground';
 import Arena from './components/Arena';
@@ -54,7 +54,25 @@ export default function App() {
           ))}
         </div>
 
-        <div className="mt-auto w-full px-2">
+        <div className="mt-auto w-full px-2 space-y-3">
+          <a 
+            href="https://github.com/T01Studio/PromptX/blob/master/docs/user-guide.md" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-[8px] transition-all duration-300 text-sm text-white/50 hover:bg-white/[0.04] hover:text-white/90 font-normal"
+          >
+            <BookOpen size={20} />
+            使用文档
+          </a>
+          <a 
+            href="https://github.com/T01Studio/PromptX/tree/master/extension" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-[8px] transition-all duration-300 text-sm text-white/50 hover:bg-white/[0.04] hover:text-white/90 font-normal"
+          >
+            <Puzzle size={20} />
+            浏览器扩展
+          </a>
           <div className="p-4 bg-white/[0.02] border border-white/[0.04] rounded-[12px] text-sm text-white/50 space-y-2 subtle-shadow-1">
             <p className="font-medium text-white/90">意图引擎就绪</p>
             <p className="text-[12px] leading-[1.6]">直接输入自然语言："帮我写一个小红书咖啡探店文案"</p>

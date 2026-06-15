@@ -5,7 +5,10 @@
 
 PromptX 是一款致力于减少人机交互摩擦的轻量级辅助工具。我们认为，**用户不仅仅是在管理提示词（Prompts），而是在不断将自己的工作方法（Methodology）沉淀为系统化的能力。**
 
-通过高效的全局触发、无感变量填充与健壮的网页输入框注入技术，PromptX 旨在帮助创作者、开发者与研究者构建属于自己的“数字外挂大脑”。
+通过高效的全局触发、无感变量填充与健壮的网页输入框注入技术，PromptX 旨在帮助创作者、开发者与研究者构建属于自己的"数字外挂大脑"。
+
+> **🚀 在线体验：**[https://t01studio.github.io/PromptX/](https://t01studio.github.io/PromptX/)  
+> **📖 使用文档：**[完整使用指南](docs/user-guide.md)（含小白上手教程和实战案例）
 
 ---
 
@@ -48,10 +51,11 @@ PromptX 针对这些痛点，提供了更为顺滑的解决方案。
 
 ## 📅 发展路线图 (Roadmap)
 
-- [ ] **Phase 1 (进行中):** 跑通核心注入引擎（兼容 Textarea & Contenteditable）与 `/` 快捷唤起。
-- [ ] **Phase 2:** 完善本地提示词仓库（Prompt Vault）与版本管理（Version Control）。
-- [ ] **Phase 3:** 探索 A/B 测试竞技场（基于 API 对比不同版本提示词的输出效果）。
-- [ ] **Phase 4:** 探索“对话一键提纯”（Chat-to-Prompt）功能，通过分析历史对话自动生成结构化能力卡片。
+- [x] **Phase 1:** 跑通核心注入引擎（兼容 Textarea & Contenteditable）与 `/` 快捷唤起。
+- [x] **Phase 2:** 完善本地提示词仓库（Prompt Vault）与版本管理（Version Control）。
+- [x] **Phase 3:** A/B 测试竞技场（基于 API 对比不同版本提示词的输出效果）。
+- [x] **Phase 4:** "对话一键提纯"（Chat-to-Prompt）功能，通过分析历史对话自动生成结构化能力卡片。
+- [x] **Phase 5:** 支持多 AI 服务商（Gemini / DeepSeek / OpenAI / 自定义），前端安全配置 API Key。
 
 ---
 

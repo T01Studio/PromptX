@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppView, Category, Prompt } from './types';
-import { INITIAL_CATEGORIES, INITIAL_PROMPTS } from './data';
+import { loadPrompts, savePrompts, loadCategories } from './store/data';
 import { LayoutDashboard, TerminalSquare, Swords, Settings2, BookOpen, Puzzle, PanelLeftClose, PanelLeft } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Playground from './components/Playground';
@@ -9,10 +9,18 @@ import Settings from './components/Settings';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<AppView>('playground');
-  const [prompts, setPrompts] = useState<Prompt[]>(INITIAL_PROMPTS);
-  const [categories] = useState<Category[]>(INITIAL_CATEGORIES);
-  const [selectedPromptId, setSelectedPromptId] = useState<string | null>(INITIAL_PROMPTS[0].id);
+  const [prompts, setPrompts] = useState<Prompt[]>(() => loadPrompts());
+  const [categories] = useState<Category[]>(() => loadCategories());
+  const [selectedPromptId, setSelectedPromptId] = useState<string | null>(() => {
+    const saved = loadPrompts();
+    return saved.length > 0 ? saved[0].id : null;
+  });
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Persist prompts whenever they change
+  useEffect(() => {
+    savePrompts(prompts);
+  }, [prompts]);
 
   const updatePrompt = (updatedPrompt: Prompt) => {
     setPrompts(prev => prev.map(p => p.id === updatedPrompt.id ? updatedPrompt : p));
@@ -23,11 +31,21 @@ export default function App() {
     setSelectedPromptId(newPrompt.id);
   };
 
+  const deletePrompt = (id: string) => {
+    setPrompts(prev => {
+      const next = prev.filter(p => p.id !== id);
+      if (selectedPromptId === id) {
+        setSelectedPromptId(next.length > 0 ? next[0].id : null);
+      }
+      return next;
+    });
+  };
+
   const navItems = [
     { id: 'playground' as AppView, label: '自动驾驶舱', icon: <TerminalSquare size={20} /> },
     { id: 'dashboard' as AppView, label: '资产管理', icon: <LayoutDashboard size={20} /> },
     { id: 'arena' as AppView, label: 'A/B 竞技场', icon: <Swords size={20} /> },
-    { id: 'settings' as AppView, label: 'API 配置', icon: <Settings2 size={20} /> },
+    { id: 'settings' as AppView, label: '设置中心', icon: <Settings2 size={20} /> },
   ];
 
   const bottomLinks = [
@@ -101,6 +119,7 @@ export default function App() {
             onSelectPrompt={setSelectedPromptId}
             onUpdatePrompt={updatePrompt}
             onCreatePrompt={addPrompt}
+            onDeletePrompt={deletePrompt}
           />
         )}
         {currentView === 'playground' && (

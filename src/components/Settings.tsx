@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AISettings, AIProvider, PROVIDER_PRESETS } from '../types';
 import { loadSettings, saveSettings, clearSettings, maskApiKey } from '../store/settings';
-import { Shield, Key, Globe, Cpu, Trash2, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { exportAll, downloadExport, importAll, clearAllData } from '../store/data';
+import type { ImportResult } from '../store/data';
+import { Shield, Key, Globe, Cpu, Trash2, CheckCircle2, AlertTriangle, Download, Upload, FileJson, RefreshCw } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const PROVIDERS = Object.entries(PROVIDER_PRESETS) as [AIProvider, typeof PROVIDER_PRESETS[AIProvider]][];
@@ -10,6 +12,9 @@ export default function Settings() {
   const [settings, setSettings] = useState<AISettings>(loadSettings);
   const [showKey, setShowKey] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [importResult, setImportResult] = useState<ImportResult | null>(null);
+  const [importing, setImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setSettings(loadSettings());
@@ -38,6 +43,48 @@ export default function Settings() {
     }
   };
 
+  const handleExport = () => {
+    const data = exportAll();
+    downloadExport(data);
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImporting(true);
+    setImportResult(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = importAll(reader.result as string);
+      setImportResult(result);
+      setImporting(false);
+      if (result.success) {
+        // Reload settings from localStorage
+        setSettings(loadSettings());
+      }
+    };
+    reader.onerror = () => {
+      setImportResult({ success: false, promptsCount: 0, categoriesCount: 0, hasSettings: false, error: '文件读取失败。' });
+      setImporting(false);
+    };
+    reader.readAsText(file);
+    // Reset input so same file can be re-imported
+    e.target.value = '';
+  };
+
+  const handleResetAll = () => {
+    if (confirm('确定要清除所有本地数据（提示词、分类、API 配置）并恢复默认吗？此操作不可撤销。')) {
+      clearSettings();
+      clearAllData();
+      setSettings({ provider: 'gemini', apiKey: '', baseURL: PROVIDER_PRESETS.gemini.baseURL, model: 'gemini-2.5-flash' });
+      window.location.reload();
+    }
+  };
+
   const selectedPreset = PROVIDER_PRESETS[settings.provider];
   const isCustom = settings.provider === 'custom';
 
@@ -47,10 +94,10 @@ export default function Settings() {
         <div className="mb-8">
           <h1 className="text-[28px] font-bold tracking-tight text-white flex items-center gap-3 mb-2">
             <Shield className="text-[#D4AF37]" size={24} />
-            API 配置
+            设置中心
           </h1>
           <p className="text-white/50 text-[14px]">
-            配置大模型 API 密钥，所有信息仅保存在浏览器本地，不会上传到任何服务器。
+            管理 API 密钥、数据导入导出与备份。
           </p>
         </div>
 
@@ -178,6 +225,78 @@ export default function Settings() {
               className="w-full input-card font-mono text-[14px]"
             />
           )}
+        </div>
+
+        {/* Data Import / Export */}
+        <div className="glass-card p-6 mb-6 space-y-5">
+          <div className="flex items-center gap-2 text-[13px] font-bold text-white/40 uppercase tracking-widest">
+            <FileJson size={14} />
+            数据备份
+          </div>
+          <p className="text-[13px] text-white/50">
+            导出提示词库和设置到 JSON 文件，方便备份或迁移到其他设备。导入时会自动合并数据。
+          </p>
+          <div className="flex gap-4">
+            <button onClick={handleExport} className="btn-secondary flex-1">
+              <Download size={18} />
+              导出备份
+            </button>
+            <button onClick={handleImportClick} disabled={importing} className="btn-secondary flex-1">
+              {importing ? (
+                <RefreshCw size={18} className="animate-spin" />
+              ) : (
+                <Upload size={18} />
+              )}
+              {importing ? '导入中...' : '导入备份'}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
+          {importResult && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`p-4 rounded-[10px] border text-[13px] ${
+                importResult.success
+                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                  : 'bg-red-500/10 border-red-500/20 text-red-400'
+              }`}
+            >
+              {importResult.success ? (
+                <div className="space-y-1">
+                  <p className="font-medium">导入成功</p>
+                  <p>{importResult.promptsCount} 条提示词、{importResult.categoriesCount} 个分类已恢复。</p>
+                  {importResult.hasSettings && <p>API 配置已同步更新。</p>}
+                  <p className="text-[12px] opacity-70 mt-2">数据已写入本地存储，提示词变更已生效。</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <p className="font-medium">导入失败</p>
+                  <p>{importResult.error}</p>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </div>
+
+        {/* Reset All Data */}
+        <div className="glass-card p-6 mb-8 space-y-5 border-red-500/10">
+          <div className="flex items-center gap-2 text-[13px] font-bold text-red-400/60 uppercase tracking-widest">
+            <Trash2 size={14} />
+            重置所有数据
+          </div>
+          <p className="text-[13px] text-white/40">
+            清除浏览器中所有 PromptX 本地数据（提示词、分类、API 配置），恢复为初始状态。建议先导出备份。
+          </p>
+          <button onClick={handleResetAll} className="btn-secondary w-full text-red-400/70 hover:text-red-400 hover:border-red-400/30">
+            <Trash2 size={18} />
+            清除所有数据并重置
+          </button>
         </div>
 
         {/* Actions */}

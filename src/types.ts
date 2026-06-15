@@ -33,6 +33,14 @@ export interface AISettings {
   model: string;
 }
 
+export interface ExportData {
+  version: number;
+  exportedAt: string;
+  prompts: Prompt[];
+  categories: Category[];
+  aiSettings: AISettings;
+}
+
 export const PROVIDER_PRESETS: Record<AIProvider, { label: string; baseURL: string; models: string[] }> = {
   gemini: {
     label: 'Google Gemini',

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Category, Prompt } from '../types';
-import { Search, Plus, History, Command, Save, Tag, Target, CheckCircle2, Loader2, Bot, Sparkles, X, PanelRightClose, PanelRight } from 'lucide-react';
+import { Search, Plus, History, Command, Save, Tag, Target, CheckCircle2, Loader2, Bot, Sparkles, X, PanelRightClose, PanelRight, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface DashboardProps {
@@ -10,9 +10,10 @@ interface DashboardProps {
   onSelectPrompt: (id: string) => void;
   onUpdatePrompt: (prompt: Prompt) => void;
   onCreatePrompt?: (prompt: Prompt) => void;
+  onDeletePrompt?: (id: string) => void;
 }
 
-export default function Dashboard({ prompts, categories, selectedPromptId, onSelectPrompt, onUpdatePrompt, onCreatePrompt }: DashboardProps) {
+export default function Dashboard({ prompts, categories, selectedPromptId, onSelectPrompt, onUpdatePrompt, onCreatePrompt, onDeletePrompt }: DashboardProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -187,6 +188,20 @@ export default function Dashboard({ prompts, categories, selectedPromptId, onSel
                     <Save size={18} />
                     保存快照
                   </button>
+                  {onDeletePrompt && (
+                    <button 
+                      onClick={() => {
+                        if (confirm(`确定要删除「${selectedPrompt.title}」吗？此操作不可撤销。`)) {
+                          onDeletePrompt(selectedPrompt.id);
+                        }
+                      }}
+                      className="btn-secondary text-white/40 hover:text-red-400 hover:border-red-400/30"
+                      title="删除此提示词"
+                    >
+                      <Trash2 size={18} />
+                      删除
+                    </button>
+                  )}
                 </div>
               </div>
               

@@ -22,4 +22,36 @@ export interface Category {
   iconName: string;
 }
 
-export type AppView = 'dashboard' | 'playground' | 'arena';
+export type AppView = 'dashboard' | 'playground' | 'arena' | 'settings';
+
+export type AIProvider = 'gemini' | 'deepseek' | 'openai' | 'custom';
+
+export interface AISettings {
+  provider: AIProvider;
+  apiKey: string;
+  baseURL: string;
+  model: string;
+}
+
+export const PROVIDER_PRESETS: Record<AIProvider, { label: string; baseURL: string; models: string[] }> = {
+  gemini: {
+    label: 'Google Gemini',
+    baseURL: 'https://generativelanguage.googleapis.com/v1beta',
+    models: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash'],
+  },
+  deepseek: {
+    label: 'DeepSeek',
+    baseURL: 'https://api.deepseek.com/v1',
+    models: ['deepseek-chat', 'deepseek-reasoner'],
+  },
+  openai: {
+    label: 'OpenAI',
+    baseURL: 'https://api.openai.com/v1',
+    models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo'],
+  },
+  custom: {
+    label: '自定义（兼容 OpenAI 协议）',
+    baseURL: '',
+    models: [],
+  },
+};

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { AppView, Category, Prompt } from './types';
 import { INITIAL_CATEGORIES, INITIAL_PROMPTS } from './data';
-import { LayoutDashboard, TerminalSquare, Swords } from 'lucide-react';
+import { LayoutDashboard, TerminalSquare, Swords, Settings2 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Playground from './components/Playground';
 import Arena from './components/Arena';
+import Settings from './components/Settings';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<AppView>('playground');
@@ -25,6 +26,7 @@ export default function App() {
     { id: 'playground', label: '自动驾驶舱', icon: <TerminalSquare size={20} /> },
     { id: 'dashboard', label: '资产管理', icon: <LayoutDashboard size={20} /> },
     { id: 'arena', label: 'A/B 竞技场', icon: <Swords size={20} /> },
+    { id: 'settings', label: 'API 配置', icon: <Settings2 size={20} /> },
   ] as const;
 
   return (
@@ -77,6 +79,9 @@ export default function App() {
         )}
         {currentView === 'arena' && (
           <Arena prompts={prompts} />
+        )}
+        {currentView === 'settings' && (
+          <Settings />
         )}
       </main>
     </div>

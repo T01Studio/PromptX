@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Category, Prompt } from '../types';
-import { Search, Plus, History, Command, Save, Tag, Target, CheckCircle2, Loader2, Bot, Sparkles, X } from 'lucide-react';
+import { Search, Plus, History, Command, Save, Tag, Target, CheckCircle2, Loader2, Bot, Sparkles, X, PanelRightClose, PanelRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface DashboardProps {
@@ -23,6 +23,7 @@ export default function Dashboard({ prompts, categories, selectedPromptId, onSel
   const [extractText, setExtractText] = useState('');
   const [isExtracting, setIsExtracting] = useState(false);
   const [extractedPrompt, setExtractedPrompt] = useState<Partial<Prompt> | null>(null);
+  const [timelineOpen, setTimelineOpen] = useState(true);
 
   const filteredPrompts = prompts.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || p.command.toLowerCase().includes(searchQuery.toLowerCase());
@@ -224,35 +225,57 @@ export default function Dashboard({ prompts, categories, selectedPromptId, onSel
             </div>
           </div>
 
-          <div className="w-[320px] bg-white/[0.01] flex flex-col shrink-0 flex-1 max-w-[320px]">
-            <div className="p-8 border-b border-white/[0.05] flex items-center gap-3 text-[15px] font-bold text-white">
-              <History size={18} className="text-[#D4AF37]" />
-              版本追踪
-            </div>
-            <div className="flex-1 overflow-y-auto p-8 space-y-8 relative">
-              <div className="absolute left-[39px] top-12 bottom-0 w-[1px] bg-white/[0.05]"></div>
-              
-              <div className="relative pl-12 line-clamp-1">
-                <div className="absolute -left-[3px] top-[6px] w-[9px] h-[9px] rounded-full bg-[#D4AF37] ring-4 ring-[#121212] z-10"></div>
-                <div className="text-[14px] font-medium text-white">当前未命名版本</div>
-                <div className="text-[12px] text-white/40 mt-1">修改未保存...</div>
-              </div>
-              {selectedPrompt.history.map((ver, idx) => (
-                <div key={ver.id} className="relative pl-12 opacity-60 hover:opacity-100 transition-opacity">
-                  <div className="absolute -left-[2px] top-[6px] w-[7px] h-[7px] rounded-full bg-white/20 ring-4 ring-[#121212] z-10"></div>
-                  <div className="text-[14px] font-medium text-white flex items-center justify-between">
-                     历史版本 {selectedPrompt.history.length - idx}
+          <div className={`bg-white/[0.01] flex flex-col shrink-0 transition-all duration-300 ${timelineOpen ? 'w-[320px] max-w-[320px]' : 'w-0 overflow-hidden border-l border-white/[0.05]'}`}>
+            {timelineOpen && (
+              <>
+                <div className="p-8 border-b border-white/[0.05] flex items-center justify-between text-[15px] font-bold text-white">
+                  <div className="flex items-center gap-3">
+                    <History size={18} className="text-[#D4AF37]" />
+                    版本追踪
                   </div>
-                  <div className="text-[12px] font-mono text-white/40 mt-1">{new Date(ver.timestamp).toLocaleString()}</div>
-                  <button 
-                    onClick={() => handleRestore(ver.template)}
-                    className="text-[12px] bg-transparent hover:bg-white/[0.05] border border-white/[0.1] text-white/70 px-4 py-2 rounded-[6px] mt-4 transition-colors active:scale-95"
+                  <button
+                    onClick={() => setTimelineOpen(false)}
+                    className="btn-icon"
+                    title="收起面板"
                   >
-                    回滚至此版本
+                    <PanelRightClose size={16} />
                   </button>
                 </div>
-              ))}
-            </div>
+                <div className="flex-1 overflow-y-auto p-8 space-y-8 relative">
+                  <div className="absolute left-[39px] top-12 bottom-0 w-[1px] bg-white/[0.05]"></div>
+                  
+                  <div className="relative pl-12 line-clamp-1">
+                    <div className="absolute -left-[3px] top-[6px] w-[9px] h-[9px] rounded-full bg-[#D4AF37] ring-4 ring-[#121212] z-10"></div>
+                    <div className="text-[14px] font-medium text-white">当前未命名版本</div>
+                    <div className="text-[12px] text-white/40 mt-1">修改未保存...</div>
+                  </div>
+                  {selectedPrompt.history.map((ver, idx) => (
+                    <div key={ver.id} className="relative pl-12 opacity-60 hover:opacity-100 transition-opacity">
+                      <div className="absolute -left-[2px] top-[6px] w-[7px] h-[7px] rounded-full bg-white/20 ring-4 ring-[#121212] z-10"></div>
+                      <div className="text-[14px] font-medium text-white flex items-center justify-between">
+                         历史版本 {selectedPrompt.history.length - idx}
+                      </div>
+                      <div className="text-[12px] font-mono text-white/40 mt-1">{new Date(ver.timestamp).toLocaleString()}</div>
+                      <button 
+                        onClick={() => handleRestore(ver.template)}
+                        className="text-[12px] bg-transparent hover:bg-white/[0.05] border border-white/[0.1] text-white/70 px-4 py-2 rounded-[6px] mt-4 transition-colors active:scale-95"
+                      >
+                        回滚至此版本
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+            {!timelineOpen && (
+              <button
+                onClick={() => setTimelineOpen(true)}
+                className="h-full flex items-center justify-center text-white/30 hover:text-white/60 transition-colors p-2"
+                title="展开版本追踪"
+              >
+                <PanelRight size={18} />
+              </button>
+            )}
           </div>
         </div>
       ) : (

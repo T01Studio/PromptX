@@ -155,6 +155,9 @@ const PLATFORM_CONFIG = {
   'poe.com': { name: 'Poe', inputSelector: 'textarea, div[contenteditable="true"]' },
   'gemini.google.com': { name: 'Gemini', inputSelector: 'div[contenteditable="true"]' },
   'deepseek.com': { name: 'DeepSeek', inputSelector: 'textarea, div[contenteditable="true"]' },
+  'yuanbao.tencent.com': { name: '腾讯元宝', inputSelector: 'textarea, div[contenteditable="true"]' },
+  'xinghuo.xfyun.cn': { name: '讯飞星火', inputSelector: 'textarea, div[contenteditable="true"]' },
+  'chatglm.cn': { name: '智谱清言', inputSelector: 'textarea, div[contenteditable="true"]' },
 };
 
 function detectPlatform() {
